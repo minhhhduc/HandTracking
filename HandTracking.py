@@ -4,6 +4,7 @@ import time
 import numpy as np
 import os, random
 from Checker import Road
+import numpy as np
  
 class handDetector():
     def __init__(self, mode=False, maxHands=1, modelC = 1, detectionCon=0.5, trackCon=0.5):
@@ -48,12 +49,14 @@ class handDetector():
         return lmList
 
 def CheckDraw(lmList, StartPoint, radius, CanStart):
-    # return False
-    return  np.linalg.norm(StartPoint - lmList[8][1:]) > radius and CanStart
+    StartPoint_np = np.array(StartPoint)
+    lmList_np = np.array(lmList[8][1:])
+    return  np.linalg.norm(StartPoint_np - lmList_np) > radius and CanStart
 
 def CanStart(lmList, StartPoint, radius):
-    # print(np.linalg.norm(StartPoint - lmList[8][1:]) <= radius)
-    return np.linalg.norm(StartPoint - lmList[8][1:]) <= radius
+    StartPoint_np = np.array(StartPoint)
+    lmList_np = np.array(lmList[8][1:])
+    return np.linalg.norm(StartPoint_np - lmList_np) <= radius
 
 def GetObjectToShow():
     Path = "Objects/"
@@ -93,7 +96,7 @@ def main():
     points = []
     Roads = Road(Object)
     StartPointRadius = 25
-    StartPoint = (0, 0)
+    StartPoint = (300, 100)
     canStart = False
     canStop = False
     canDraw = False
@@ -138,7 +141,6 @@ def main():
             cv2.line(CanvasImage, startpoint, endpoint, color=(187, 181,255), thickness= 18)
             cv2.line(NewCanvas, startpoint, endpoint, color=(255, 255, 255), thickness= 18)
 
-        cv2.circle(img, StartPoint, StartPointRadius, (255, 255, 0), thickness=cv2.FILLED)
         cv2.imwrite("Hand.png", NewCanvas)
         img = cv2.add(img, CanvasImage)
         cTime = time.time()
@@ -147,6 +149,7 @@ def main():
  
         cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3,
                     (255, 0, 255), 3)
+        cv2.circle(img, StartPoint, StartPointRadius, (255, 255, 0), thickness=cv2.FILLED)
         
         #Check if go collect side
         
